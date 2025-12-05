@@ -1,0 +1,77 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// --- Model User ---
+// Wajib: id, email, password, role, timestamps
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String   // Akan di-hash dengan Bcrypt
+  role      String   @default("USER") // Enum: USER, ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi: User bisa menulis banyak review
+  reviews   Review[]
+
+  @@map("users")
+}
+
+// --- Model Category (Genre) ---
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi Many-to-Many: Kategori punya banyak buku
+  books     Book[]
+
+  @@map("categories")
+}
+
+// --- Model Book (Entitas Utama) ---
+model Book {
+  id          Int      @id @default(autoincrement())
+  title       String
+  author      String
+  summary     String
+  releaseYear Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi Many-to-Many: Buku punya banyak kategori
+  categories  Category[] 
+  
+  // Relasi One-to-Many: Buku punya banyak review
+  reviews     Review[]
+
+  @@index([title]) // Optimasi pencarian judul
+  @@map("books")
+}
+
+// --- Model Review (Entitas Transaksi) ---
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int      // Skala 1-5
+  content   String
+  userId    Int
+  bookId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi Foreign Key
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
