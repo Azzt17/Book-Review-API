@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const errorHandler = require('./middleware/errorMiddleware');
 require('dotenv').config();
 
 const app = express();
@@ -37,6 +38,9 @@ app.use((req, res) => {
     message: 'Route not found'
   });
 });
+
+// --- Error Handling Middleware ---
+app.use(errorHandler);
 
 // --- Server Start ---
 const PORT = process.env.PORT || 3000;

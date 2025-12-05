@@ -115,8 +115,7 @@ const getMe = async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
+    next(error); // Oper ke error handling middleware
   }
 };
 
