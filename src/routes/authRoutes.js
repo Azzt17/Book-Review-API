@@ -1,20 +1,14 @@
-// src/routes/authRoutes.js
 const express = require('express');
-
-// 1. Pastikan Anda mengimpor 'getMe' dari controller
-const { register, login, getMe } = require('../controllers/authController');
-
-// 2. Pastikan Anda mengimpor middleware 'authenticate'
+const { register, login } = require('../controllers/authController');
 const authenticate = require('../middleware/authMiddleware');
+const { registerSchema, loginSchema } = require('../validators/schemas');
+const validate = require('../middleware/validationMiddleware');
 
 const router = express.Router();
 
-// Route untuk Register & Login (Public)
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', validate(registerSchema), register);
+router.post('/login', validate(loginSchema), login);
 
-// Route untuk Profil (Protected)
-// Sekarang variabel 'authenticate' dan 'getMe' sudah dikenali
 router.get('/me', authenticate, getMe);
 
 module.exports = router;
