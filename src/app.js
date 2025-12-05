@@ -3,11 +3,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan'); // Logger
 const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const bookRoutes = require('./routes/bookRoutes');
 require('dotenv').config();
 
 const app = express();
 
-// --- 1. Middleware Global ---
+// --- Middleware Global ---
 app.use(helmet()); // Mengamankan HTTP headers
 app.use(cors());   // Mengizinkan akses cross-origin
 app.use(morgan('dev')); // Logging request ke console
@@ -23,8 +25,10 @@ app.get('/', (req, res) => {
   });
 });
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/books', bookRoutes);
 
-// --- 3. 404 Handler (Jika route tidak ditemukan) ---
+// --- 404 Handler (Jika route tidak ditemukan) ---
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -32,7 +36,7 @@ app.use((req, res) => {
   });
 });
 
-// --- 4. Server Start ---
+// --- Server Start ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT} in ${process.env.NODE_ENV} mode`);
