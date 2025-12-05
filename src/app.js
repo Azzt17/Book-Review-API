@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const morgan = require('morgan'); // Logger
+const morgan = require('morgan'); 
 const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const bookRoutes = require('./routes/bookRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // --- 404 Handler (Jika route tidak ditemukan) ---
 app.use((req, res) => {
