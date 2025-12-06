@@ -7,23 +7,29 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const errorHandler = require('./middleware/errorMiddleware');
+const compression = require('compression');
+const { globalLimiter } = require('./middleware/rateLimitMiddleware');
 require('dotenv').config();
 
 const app = express();
 
 // --- Middleware Global ---
-app.use(helmet()); // Mengamankan HTTP headers
-app.use(cors());   // Mengizinkan akses cross-origin
+app.use(helmet()); // Mengamankan HTTP headers (optional middleware)
+app.use(cors());   // Mengizinkan akses cross-origin (optional middleware)
 app.use(morgan('dev')); // Logging request ke console
+app.use(compression()); // Mengompresi response (optional middleware)
+app.use(globalLimiter); // Menerapkan rate limiting global (optional middleware)
+
 app.use(express.json()); // Parsing JSON body
 app.use(express.urlencoded({ extended: true }));
 
 // --- Routes ---
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Book Review API is running successfully!',
-    serverTime: new Date().toISOString()
+  res.status(200).json({
+    status: 'UP', 
+    message: 'Book Review API is running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime() 
   });
 });
 app.use('/api/auth', authRoutes);
