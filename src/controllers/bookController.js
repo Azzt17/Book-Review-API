@@ -1,17 +1,34 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// 1. GET ALL BOOKS (With Pagination & Search)
+// 1. GET ALL BOOKS WITH PAGINATION, SEARCH, SORTING
 const getAllBooks = async (req, res) => {
   try {
-    // Ambil query params (default values jika kosong)
-    const { search, page = 1, limit = 10 } = req.query;
+    // Ambil query params dengan default values
+    const { 
+      search, 
+      page = 1, 
+      limit = 10, 
+      sortBy = 'createdAt',
+      order = 'desc' 
+    } = req.query;
+
     const skip = (page - 1) * limit;
 
-    // Filter Logic
+    // Filter Logic (Search)
     const filter = {};
     if (search) {
-      filter.title = { contains: search }; // SQLite: default case-insensitive di like, tapi prisma contains case-sensitive di bbrp DB.
+      filter.title = { contains: search }; 
+    }
+
+    // Sorting Logic
+    const orderBy = {};
+    // Pastikan field sortBy valid (untuk keamanan sederhana)
+    const allowedSortFields = ['id', 'title', 'releaseYear', 'createdAt'];
+    if (allowedSortFields.includes(sortBy)) {
+      orderBy[sortBy] = order.toLowerCase() === 'asc' ? 'asc' : 'desc';
+    } else {
+      orderBy.createdAt = 'desc';
     }
 
     // Query Database
@@ -19,15 +36,15 @@ const getAllBooks = async (req, res) => {
       where: filter,
       skip: parseInt(skip),
       take: parseInt(limit),
-      include: { categories: true }, // Tampilkan juga kategorinya
-      orderBy: { createdAt: 'desc' }
+      orderBy: orderBy,
+      include: { categories: true }
     });
 
-    // Hitung total untuk pagination info
     const totalBooks = await prisma.book.count({ where: filter });
 
     res.json({
       success: true,
+      message: 'List buku berhasil diambil',
       data: books,
       pagination: {
         total: totalBooks,
