@@ -1,7 +1,6 @@
-// src/controllers/authController.js
 const { PrismaClient } = require('@prisma/client');
 const { hashPassword, comparePassword, generateTokens } = require('../utils/authUtils');
-
+const jwt = require('jsonwebtoken');
 const prisma = new PrismaClient();
 
 // --- 1. REGISTER ---
@@ -119,4 +118,43 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe };
+// --- 4. REFRESH TOKEN ---
+const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({ success: false, message: 'Refresh Token wajib diisi' });
+    }
+
+    // Verifikasi Refresh Token
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ success: false, message: 'Refresh Token tidak valid atau kadaluwarsa' });
+      }
+
+      // Jika valid, buat Access Token baru
+      // Kita butuh data user minimal (id & role) untuk payload
+      const payload = { 
+        id: decoded.id, 
+        role: decoded.role 
+      };
+
+      const newAccessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN || '15m' // Sesuai spec: 15 menit
+      });
+
+      res.json({
+        success: true,
+        accessToken: newAccessToken
+      });
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
+  }
+};
+
+// Update module.exports
+module.exports = { register, login, getMe, refreshToken };

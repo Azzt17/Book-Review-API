@@ -8,6 +8,8 @@ Base URL: `http://<IP_ADDRESS>:3000/api`
 - **POST** `/auth/login` - Masuk sistem.
   - Body: `email`, `password`
 - **GET** `/auth/me` - Cek profil sendiri (Butuh Token).
+- **POST** `/auth/refresh` - Perbarui Access Token.
+  - Body: `refreshToken` (Dapat dari response login)
 
 ## Books
 - **GET** `/books` - List buku.
