@@ -2,13 +2,13 @@
 
 ## Informasi Project
 - **Repo GitHub:** https://github.com/Azzt17/Book-Review-API/tree/main
-- **Production URL:** http://<IP_AWS>:3000
-- **Health Check:** http://<IP_AWS>:3000/
+- **Production URL:** http://54.161.153.26:3000
+- **Health Check:** http://54.161.153.26:3000/api
 
 ## Detail AWS EC2
-- **Instance ID:** [Akan diisi nanti]
+- **Instance ID:** i-0bc4bc8ec59113c51
 - **Type:** t2.micro
-- **Region:** us-east-1 (sesuaikan nanti)
+- **Region:** us-east-1
 - **OS:** Ubuntu Server 22.04 LTS
 
 ## Langkah Deployment

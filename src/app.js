@@ -17,6 +17,7 @@ const app = express();
 
 // --- Middleware Global ---
 app.use(helmet()); // Mengamankan HTTP headers (optional middleware)
+
 // [UPDATE] Konfigurasi CORS
 // Kita izinkan semua (*) untuk fase development/testing
 // Tapi kita siapkan logic-nya untuk Production
@@ -48,7 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.status(200).json({
     status: 'UP', 
-    message: 'Book Review API is running',
+    message: 'Welcome to Book Review API',
     timestamp: new Date().toISOString(),
     uptime: process.uptime() 
   });
