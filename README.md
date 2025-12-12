@@ -31,57 +31,55 @@ Aplikasi ini menggunakan arsitektur **MVC (Model-View-Controller)**:
 - `src/utils`: Fungsi bantuan (Hashing, Token).
 - `prisma/`: Schema database dan seeder.
 
-## ⚙️ Cara Menjalankan (Local)
+## ⚙️ Instalasi & Deployment (Metode Native/PM2)
 
-1.  **Clone Repository**
+Ini adalah metode deployment utama untuk memenuhi requirement **Process Management (PM2)** dan **Reverse Proxy (Nginx)**.
+
+1.  **Persiapan Environment**
+    Pastikan Node.js v18+, NPM, dan PM2 Global sudah terinstall.
     ```bash
-    git clone https://github.com/Azzt17/Book-Review-API/
-    cd book-review-api
+    npm install -g pm2
     ```
 
-2.  **Install Dependencies**
+2.  **Instalasi Dependencies**
     ```bash
+    git clone [https://github.com/Azzt17/Book-Review-API.git](https://github.com/Azzt17/Book-Review-API.git)
+    cd Book-Review-API
     npm install
     ```
 
-3. **Setup Environment Variables**
-   Duplikat file `.env.example` menjadi `.env`, lalu isi variabelnya:
-   ```env
-   NODE_ENV=development
-   PORT=3000
-   DATABASE_URL="file:./dev.db"
-   JWT_SECRET=rahasia_super_panjang_dan_aman
-   JWT_EXPIRES_IN=15m
-   JWT_REFRESH_SECRET=rahasia_refresh_super_panjang
-   JWT_REFRESH_EXPIRES_IN=7d
-    ```
-
-4.  **Database Migration & Seeding**
+3.  **Setup Database**
+    Pastikan file `.env` sudah dikonfigurasi dengan path absolut ke database SQLite.
     ```bash
-    # Buat tabel
-    npx prisma migrate dev --name init
-
-    # Isi data awal (Admin & Buku Sampel)
+    npx prisma generate
+    npx prisma migrate deploy
     npx prisma db seed
     ```
 
-5.  **Jalankan Server**
+4.  **Menjalankan Aplikasi (PM2)**
+    Menggunakan konfigurasi `ecosystem.config.js` yang telah disediakan.
     ```bash
-    npm run dev
+    # Start Aplikasi
+    pm2 start ecosystem.config.js
+
+    # Monitoring
+    pm2 monit
     ```
 
-## 🐳 Cara Menjalankan (Docker)
+---
 
-Jika Anda memiliki Docker, Anda tidak perlu install Node.js secara manual.
+## 🐳 Deployment Alternatif (Docker)
+
+Repositori ini juga mendukung deployment berbasis container untuk kemudahan distribusi.
 
 1.  **Build Image**
     ```bash
-    docker build -t book-review-api .
+    docker build -t book-api .
     ```
 
 2.  **Run Container**
     ```bash
-    docker run -p 3000:3000 --env-file .env --name my-book-api book-review-api
+    docker run -d -p 3000:3000 --env-file .env --name my-book-api book-api
     ```
 
 ## 🧪 Akun Testing (Seeder)
