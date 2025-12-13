@@ -1,0 +1,5 @@
+::1 - - [13/Dec/2025:07:55:23 +0000] "GET /api HTTP/1.1" 200 113 "-" "PostmanRuntime/7.49.1"
+::1 - - [13/Dec/2025:07:55:35 +0000] "POST /api/auth/login HTTP/1.1" 200 489 "-" "PostmanRuntime/7.49.1"
+::1 - - [13/Dec/2025:07:55:55 +0000] "DELETE /api/categories/6 HTTP/1.1" 200 45 "-" "PostmanRuntime/7.49.1"
+::1 - - [13/Dec/2025:07:56:00 +0000] "DELETE /api/categories/6 HTTP/1.1" 500 84 "-" "PostmanRuntime/7.49.1"
+::1 - - [13/Dec/2025:07:56:10 +0000] "POST /api/categories HTTP/1.1" 400 90 "-" "PostmanRuntime/7.49.1"

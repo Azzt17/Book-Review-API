@@ -22,6 +22,19 @@ const createBookSchema = Joi.object({
   categoryIds: Joi.array().items(Joi.number().integer()).min(1).required() // Minimal 1 kategori
 });
 
+// Schema untuk Membuat Kategory
+const createCategorySchema = Joi.object({
+  name: Joi.string()
+    .trim()          // Hapus spasi di awal/akhir
+    .min(3)          // Wajib minimal 3 karakter (cegah string kosong/pendek)
+    .required()      // Wajib diisi
+    .messages({
+      'string.empty': 'Nama kategori tidak boleh kosong',
+      'string.min': 'Nama kategori minimal 3 karakter',
+      'any.required': 'Nama kategori wajib diisi'
+    })
+});
+
 // Schema untuk Membuat Review
 const createReviewSchema = Joi.object({
   bookId: Joi.number().integer().required(),
@@ -33,5 +46,6 @@ module.exports = {
   registerSchema,
   loginSchema,
   createBookSchema,
-  createReviewSchema
+  createReviewSchema,
+  createCategorySchema
 };
